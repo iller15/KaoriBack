@@ -4,9 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
+@EnableEurekaClient
 public class NotSpoiledApplication implements CommandLineRunner{
 
 	@Autowired
@@ -23,7 +29,12 @@ public class NotSpoiledApplication implements CommandLineRunner{
 		for (int i = 0; i < 4; i++) {
 			String passwordBcrypt = passwordEncoder.encode(password);
 			System.out.println(passwordBcrypt);
-		}
-		
+		}	
 	}
+}
+@Configuration
+class RestTemplateConfig{
+	@Bean
+	@LoadBalanced
+	public RestTemplate restTemplate() {return new RestTemplate();}
 }

@@ -5,8 +5,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.client.RestTemplate;
 
 import Kaori.wiki.entidades.Articulo;
 import Kaori.wiki.entidades.AvanceSerie;
@@ -14,7 +19,6 @@ import Kaori.wiki.entidades.Capitulo;
 import Kaori.wiki.entidades.Serie;
 import Kaori.wiki.entidades.Snippet;
 import Kaori.wiki.entidades.Temporada;
-import Kaori.wiki.entidades.Usuario;
 import Kaori.wiki.entidades.Usuariox;
 import Kaori.wiki.repositorios.Articulo_Repositorio;
 import Kaori.wiki.repositorios.AvanceSerie_Repositorio;
@@ -48,6 +52,10 @@ public class Servicios_web {
 	Usuario_Repositorio usuario_Repositorio;
 	@Autowired
 	RepositorioUsuarioxDao usuariox_Repositorio;
+	@Autowired
+	private RestTemplate restTemplate;
+	@Autowired
+	private Environment environment;
 	
 	//AUXILIAR
 	public static Boolean similares(String s1, String s2) { //S1: Original | S2: Busqueda
@@ -149,6 +157,17 @@ public class Servicios_web {
 			public List<AvanceSerie> listListas() {
 				return (List<AvanceSerie>) avanceSerie_Repositorio.findAll();
 			}
+			
+//PERSONAJE
+	@PostMapping("/regPersonaje")
+	Object registrarPersonaje() {
+		return this.restTemplate.getForObject("http://personaje-service/api/regPersonaje", Object.class);
+	}
+	@GetMapping("/getPersonaje/{idPersonaje}")
+	Object obtenerPersonaje(@PathVariable(value = "idPersonaje") String idPersonaje) {
+		return this.restTemplate.getForObject("http://personaje-service/api/Personaje/"+idPersonaje, Object.class);
+	}
+
 	
 // ARTICULOS
 	
